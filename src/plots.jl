@@ -6,8 +6,15 @@ using ProgressMeter
 using Printf
 
 
-
 function basin_plot_x0(du0, p, colors, steps)
+    """
+    Plot basin spectrum as a function of x0 and y0, assuming fixed values of du0 
+    input:
+        du0: 2-element list [dx0, dy0]
+        p: model parameters struct
+        colors: colors to plot the basins
+        steps: sampling spacing, assuming equal range and steps for x and y axes
+    """
 
     # get array of basins via threading
     result = ThreadsX.collect(get_basin(du0, [y,x], p) for x in steps, y in steps)
@@ -34,6 +41,15 @@ end
 
 
 function basin_plot_v0(u0, p, colors, xsteps, ysteps, r)
+    """
+    Plot basin spectrum as a function of dx0 and dy0, assuming fixed values of u0  
+    input:
+        u0: 2-element list [x0, y0]
+        p: model parameters struct
+        colors: colors to plot the basins
+        xsteps: sampling spacing for x axis
+        ysteps: sampling spacing for y axis
+    """
 
     # get array of basins via threading
     result = ThreadsX.collect(get_basin([xdot,ydot], u0, p) for ydot in ysteps, xdot in xsteps)
@@ -56,27 +72,6 @@ function basin_plot_v0(u0, p, colors, xsteps, ysteps, r)
             legend = false,
             fillalpha = 0)
 
-    #savefig(fig,"basins.pdf")
-end
-
-
-function basin_plot_xaxis(p, colors, xdotsteps, xsteps)
-
-    # get array of basins via threading
-    result = ThreadsX.collect(get_basin([xdot,0], [x,0], p) for xdot in xdotsteps, x in xsteps)
-    
-    # map from basin to colors
-    result = colors[result]
-
-    # plot  
-    plot(xsteps, xdotsteps, result, 
-        aspect_ratio = :equal,
-        yflip = true,
-        xlabel = L"x_0", 
-        ylabel = L"\dot{x}_0",
-        xlims = (xdotsteps[1], xdotsteps[end]),
-        ylims = (xsteps[1], xsteps[end])) 
-    
     #savefig(fig,"basins.pdf")
 end
 
@@ -104,17 +99,19 @@ end
 
 
 function plot_basin_lengths(p, zoom, T)
+    """
+    Plot histogram of basin lengths along circle centered at origin in velocity space
+    input:
+        p: model parameters struct
+        zoom: zoom parameter struct
+        T: number type for calculations 
+    """
+
     edges = find_basin_edges!(p, zoom, T)
     lengths = get_basin_lengths(zoom, edges)
 
-    #xmin = zoom.prec + log10(zoom.r)
-    #xmax = 1
-    
-    #ticks = xmin:2:xmax
-    #ticklabels = [ @sprintf("%2.0f",x) for x in ticks ]
-
-    xmin = -12
-    xmax = -0.1
+    xmin = -12 # for plotting
+    xmax = -0.1 # for plotting
     ticks = LinRange(xmin, xmax, 6)
     ticklabels = [ @sprintf("%2.4f",x) for x in ticks ]
 
@@ -129,9 +126,11 @@ function plot_basin_lengths(p, zoom, T)
 end
 
 
-
-
 function plot_basin_spectra_a(T, N)
+    """
+    scratch work - should ignore for now
+    scatter plot of a (dissipation coeff) versus basin length
+    """
 
     zoom = zoom_parameters{T, N}([0., 0.], # [x0, y0] initial positions
                                 (0., 0.), # center of velocity circle
@@ -175,12 +174,14 @@ function plot_basin_spectra_a(T, N)
         ylabel = L"\log_{10} \ell_b",
         ylim = [zoom.prec, 0.5])
             
-
-                
 end
 
 
 function plot_basin_spectra_r(T, N)
+    """
+    scratch work - should ignore for now
+    scatter plot of r (circle radius) versus basin length
+    """
 
     p = model_parameters{T}(0.5, # ω
                             0.2, # a

@@ -1,9 +1,6 @@
 using DifferentialEquations
 
 
-
-
-
 function mag_force(u, x̃, p)
     x, y = u
     h = p.h
@@ -48,11 +45,6 @@ function get_basin(du0, u0, p)
 end
 
 
-function circular_contour(cu0, r, θ₁, θ₂, nsteps, T)
-    cx0, cy0 = cu0
-    return [circle{T}(θ, cx0 + r*cos(θ), cy0 + r*sin(θ)) for θ in LinRange(θ₁, θ₂, nsteps)]
-end
-
 function circular_contour(zoom, edge, T)
     cx0, cy0 = zoom.cdu0
     r, θ₁, θ₂, nsteps = zoom.r, edge.min, edge.max, zoom.n_samples
@@ -62,7 +54,6 @@ end
 
 function find_basins_edges_helper(p, zoom, edge, T)
     # find basins along circular contour
-    #contour_steps = circular_contour(zoom.cdu0, zoom.r, edge.min, edge.max, zoom.n_samples, T)
     contour_steps = circular_contour(zoom, edge, T)
     basins_sample = [get_basin([circ.vx, circ.vy], zoom.u0, p) for circ in contour_steps]
 
@@ -125,7 +116,6 @@ function find_basin_edges!(p, zoom, T)
     end
 
     for edge in edges
-        #println(edge)
         println(edge.min, " & ", edge.max, " & ", edge.left_basin, " & ", edge.right_basin, raw" \\ ")
     end
     
