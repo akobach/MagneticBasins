@@ -22,21 +22,10 @@ Required julia libraries:
 
 ### Installing
 
-* Just download the repo, install the needed python packages, and run locally.
+* Just download the repo, add the needed julia packages, and run locally
 
 ### Executing program
 
-There are three running modes:
-* training
-* testing
-* playing
-
-In order to play or test, you must first train the agent by play it pitted against itself.
-
-The file main.py has examples on how to run all three modes:
-
-```
->> python main.py
-```
+I use the julia envirnoment in VSCode, and press the "play" button when viewing main.jl
 
 
