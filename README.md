@@ -1,6 +1,4 @@
-# Project Title
-
-Slim fractals in basins of a magnetic pendulum
+# Slim fractals in basins of a magnetic pendulum
 
 ## Description
 
